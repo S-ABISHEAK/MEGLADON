@@ -30,8 +30,10 @@ app.include_router(websocket.router)
 app.include_router(system.router)
 
 # Serve job artifacts (frames, keyframes, models, etc.) statically for the frontend/viewer.
+# Mounted at /artifacts (not /jobs) so it never collides with the frontend's own
+# /jobs/:jobId SPA routes when the browser does a full page navigation.
 settings.JOBS_DIR.mkdir(parents=True, exist_ok=True)
-app.mount("/jobs", StaticFiles(directory=str(settings.JOBS_DIR)), name="jobs")
+app.mount("/artifacts", StaticFiles(directory=str(settings.JOBS_DIR)), name="artifacts")
 
 
 @app.get("/api/health")

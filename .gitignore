@@ -29,3 +29,5 @@ models/**/*.ckpt
 .DS_Store
 *.log
 yolov8n.pt
+*.tsbuildinfo
+dump.rdb

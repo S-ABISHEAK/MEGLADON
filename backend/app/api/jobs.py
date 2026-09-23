@@ -4,6 +4,7 @@ import shutil
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -266,6 +267,18 @@ def get_model(job_id: str, db: Session = Depends(get_db)):
 def get_artifacts(job_id: str, db: Session = Depends(get_db)):
     arts = db.query(OutputArtifact).filter_by(job_id=job_id).all()
     return [{"type": a.type, "path": a.path, "metadata": a.artifact_metadata} for a in arts]
+
+
+@router.get("/{job_id}/download-package")
+def download_package(job_id: str, db: Session = Depends(get_db)):
+    job = db.query(ReconstructionJob).get(job_id)
+    if not job:
+        raise HTTPException(404, "job not found")
+    root = job_path(job_id)
+    zip_target = settings.JOBS_DIR / f"{job_id}_package"
+    archive_path = shutil.make_archive(str(zip_target), "zip", root_dir=str(root))
+    return FileResponse(archive_path, filename=f"megalodon_{job_id[:8]}_package.zip",
+                         media_type="application/zip")
 
 
 @router.get("")
