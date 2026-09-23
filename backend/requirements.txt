@@ -6,10 +6,12 @@ websockets==14.1
 pydantic==2.10.5
 pydantic-settings==2.7.1
 
-# DB
+# DB (sqlite works out of the box via Python's stdlib -- no extra driver needed)
 sqlalchemy==2.0.36
 alembic==1.14.0
-psycopg2-binary==2.9.10  # Postgres driver, used when DATABASE_URL points at postgres (see docker-compose.yml)
+# Postgres driver is in requirements-postgres.txt (only needed for docker-compose's
+# Postgres service; installing it locally requires Postgres dev headers/pg_config,
+# so it's kept out of the default local-dev install path).
 
 # Queue
 redis==5.2.1
