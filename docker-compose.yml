@@ -1,0 +1,61 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    volumes: ["redis_data:/data"]
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: megalodon
+      POSTGRES_PASSWORD: megalodon
+      POSTGRES_DB: megalodon
+    ports: ["5432:5432"]
+    volumes: ["pg_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U megalodon"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      DATABASE_URL: postgresql://megalodon:megalodon@db:5432/megalodon
+      REDIS_URL: redis://redis:6379/0
+    ports: ["8000:8000"]
+    volumes:
+      - ./jobs:/app/jobs
+      - ./models:/app/models
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_started }
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker.Dockerfile
+    environment:
+      DATABASE_URL: postgresql://megalodon:megalodon@db:5432/megalodon
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./jobs:/app/jobs
+      - ./models:/app/models
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_started }
+      backend: { condition: service_started }
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports: ["5173:5173"]
+    depends_on:
+      backend: { condition: service_started }
+
+volumes:
+  redis_data:
+  pg_data:
