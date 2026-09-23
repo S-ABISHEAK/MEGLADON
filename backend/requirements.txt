@@ -1,0 +1,33 @@
+# Core web/API
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+websockets==14.1
+pydantic==2.10.5
+pydantic-settings==2.7.1
+
+# DB
+sqlalchemy==2.0.36
+alembic==1.14.0
+# psycopg2-binary==2.9.10  # uncomment for Postgres in production
+
+# Queue
+redis==5.2.1
+rq==2.1.0
+
+# CV / geometry (REAL, CPU-capable)
+opencv-python-headless==4.10.0.84
+numpy>=1.26,<2.0
+open3d==0.20.0
+pyproj==3.7.2
+
+# ML (REAL where CPU-feasible)
+ultralytics==8.3.0
+torch>=2.2
+
+# Optional heavy adapters (installed only if environment allows -- see docs/ARCHITECTURE.md)
+# sam2
+# transformers  # for Depth Anything V2 checkpoint loading
+
+aiofiles==24.1.0
+python-dotenv==1.0.1

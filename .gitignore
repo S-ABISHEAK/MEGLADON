@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# DB
+*.db
+*.sqlite3
+
+# Jobs / artifacts (generated at runtime)
+jobs/*
+!jobs/.gitkeep
+
+# Models (downloaded weights)
+models/**/*.pt
+models/**/*.pth
+models/**/*.onnx
+models/**/*.ckpt
+
+# Env
+.env
+.DS_Store
+*.log
+yolov8n.pt
